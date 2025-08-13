@@ -11,13 +11,14 @@ export default function Home() {
     setproduct(data?.products);
     console.log(data);
   };
+
   useEffect(() => {
     fetchdata();
   }, []);
   console.log(product);
   return (
     <div className="flex flex-col w-[100vw] h-[100vh] justify-between">
-      <div className="w-[100%] h-[10%] "></div>
+      <div className="w-[100%] "></div>
       <div className="w-[100%] h-[70%] flex justify-center items-start">
         <div className="w-[80%] h-[100%]">
           <div className="w-[100%] h-[20%] flex items-center flex-col justify-center">
@@ -61,9 +62,11 @@ export default function Home() {
       </div>
       <div className="w-[100%] h-[5%] flex justify-center items-center">
         <div>
-          <Button className="w-[200px] h-[50px] text-[20px]">
-            View All Products
-          </Button>
+          <a href="products">
+            <Button className="w-[200px] h-[50px] text-[20px]">
+              View All Products
+            </Button>
+          </a>
         </div>
       </div>
       <div className="w-[100%] h-[7%] border-2 border-gray-400 flex justify-around items-center">
