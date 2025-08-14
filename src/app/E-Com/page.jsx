@@ -88,7 +88,7 @@ export default function Home() {
               alt=""
             />
           </div>
-          <div>
+          <div> 
             <img
               className="w-[50px] h-[50px]"
               src="https://www.iconpacks.net/icons/1/free-chain-icon-868-thumb.png"

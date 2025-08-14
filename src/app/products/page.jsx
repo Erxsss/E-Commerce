@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 const Page = () => {
+  const [input, setinput] = useState("");
   const PageSize = 12;
   const [currentP, setCurrentP] = useState(1);
   const [product, setproduct] = useState();
@@ -12,13 +13,20 @@ const Page = () => {
   const [len, setlen] = useState([]);
   let skip = 0;
   const fetchdata = async () => {
+    let url = `https://dummyjson.com/products?limit=${PageSize}&skip=${skip}`;
+    console.log("working");
     if (currentP > 1) {
       skip = (currentP - 1) * PageSize;
     }
+    let response;
     console.log(skip);
-    const response = await fetch(
-      `https://dummyjson.com/products?limit=${PageSize}&skip=${skip}`
-    );
+    if (input !== "") {
+      response = await fetch(
+        `https://dummyjson.com/products/search?q=${input}`
+      );
+    } else {
+      response = await fetch(url);
+    }
     const data = await response.json();
     setlen(Math.ceil(data?.total / PageSize));
     setproduct(data?.products);
@@ -28,7 +36,7 @@ const Page = () => {
   const my_array = Array.from({ length: len }, (_, i) => i + 1);
   useEffect(() => {
     fetchdata();
-  }, [currentP]);
+  }, [currentP , input]);
   return (
     <div className="gap-[40px] flex flex-col">
       <div className="w-[100%] h-[10%] flex justify-center">
@@ -37,6 +45,10 @@ const Page = () => {
             className="w-[23%] h-[35%%] border-2"
             placeholder="Enter Product Name..."
             type="text"
+            value={input}
+            onChange={(e) => {
+              setinput(e.target.value);
+            }}
           />
         </div>
       </div>
@@ -45,7 +57,12 @@ const Page = () => {
           {product?.map((pro) => {
             return (
               <div key={pro.id}>
-                <Card className="w-[350px] h-[600px] flex flex-col p-4">
+                <Card
+                  className="w-[350px] h-[600px] flex flex-col p-4"
+                  onClick={() => {
+                    router.push(`/${pro.id}`);
+                  }}
+                >
                   <div className="w-[100%] h-[60%]">
                     <img
                       className="w-[100%] h-[100%]"
