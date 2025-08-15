@@ -3,19 +3,38 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Rating, RatingButton } from "@/components/ui/shadcn-io/rating";
+import { Card } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 const Page = () => {
   const [product, setproduct] = useState();
+  const [category, setcategory] = useState();
+  const router = useRouter();
+  const [categ, setcat] = useState();
   const params = useParams();
   const id = Number(params.each);
   const fetchdata = async () => {
     const res = await fetch(`https://dummyjson.com/products/${id}`);
     const data = await res.json();
     setproduct(data);
-    console.log(data);
+    setcategory(data?.category);
   };
+  const fetchs = async () => {
+    const resp = await fetch(
+      `https://dummyjson.com/products/category/${category}?limit=4`
+    );
+    const data = await resp.json();
+    setcat(data.products);
+    console.log("asdasd", data);
+  };
+
   useEffect(() => {
     fetchdata();
-  }, []);
+  }),[];
+  useEffect(() => {
+    if (category) {
+      fetchs();
+    }
+  }, [category]);
   return (
     <div className="flex w-[100vw] h-[100vh] justify-center items-start mt-[80px] ">
       <div className="w-[70%] h-[80%] flex flex-col gap-[50px]">
@@ -98,8 +117,44 @@ const Page = () => {
             </div>
           </div>
         </div>
-        <div>
-          <div className="w-[2000px] h-[2000px]"></div>
+        <div className=" flex flex-col gap-[20px]">
+          <div className="text-[30px] font-bold" >Related Products</div>
+          <div className="flex justify-between ">
+            {categ?.map((pro) => {
+              return (
+                <div key={pro.id}>
+                  <Card
+                    className="w-[350px] h-[600px] flex flex-col p-4"
+                    onClick={() => {
+                      router.push(`/${pro.id}`);
+                    }}
+                  >
+                    <div className="w-[100%] h-[60%]">
+                      <img
+                        className="w-[100%] h-[100%]"
+                        src={pro.images[0]}
+                        alt=""
+                      />
+                    </div>
+                    <div className="w-[100%] h-[20%]">
+                      <div className="text-[30px] font-bold">{pro.title}</div>
+                      <div className="text-[20px] text-gray-600">
+                        {pro.category}
+                      </div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div className="text-[20px] font-bold">{pro.price}$</div>
+                      <div>
+                        <Button className="bg-gray-200 hover:bg-gray-600 hover:text-white text-black ">
+                          View Details
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

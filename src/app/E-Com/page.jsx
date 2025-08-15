@@ -2,9 +2,10 @@
 import { Card } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-
+import { useRouter } from "next/navigation";
 export default function Home() {
   const [product, setproduct] = useState();
+  const router = useRouter();
   const fetchdata = async () => {
     const response = await fetch(`https://dummyjson.com/products?limit=4`);
     const data = await response.json();
@@ -30,7 +31,12 @@ export default function Home() {
           <div className="flex justify-around w-[100%] h-[70%]">
             {product?.map((pro) => {
               return (
-                <div key={pro.id}>
+                <div
+                  key={pro.id}
+                  onClick={() => {
+                    router.push(`/${pro.id}`);
+                  }}
+                >
                   <Card className="w-[400px] h-[700px] flex flex-col p-4">
                     <div className="w-[100%] h-[60%]">
                       <img
@@ -88,7 +94,7 @@ export default function Home() {
               alt=""
             />
           </div>
-          <div> 
+          <div>
             <img
               className="w-[50px] h-[50px]"
               src="https://www.iconpacks.net/icons/1/free-chain-icon-868-thumb.png"

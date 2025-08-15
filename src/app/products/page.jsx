@@ -11,18 +11,18 @@ const Page = () => {
   const [product, setproduct] = useState();
   const router = useRouter();
   const [len, setlen] = useState([]);
-  let skip = 0;
+
   const fetchdata = async () => {
-    let url = `https://dummyjson.com/products?limit=${PageSize}&skip=${skip}`;
-    console.log("working");
+    let skip = 0;
+
     if (currentP > 1) {
       skip = (currentP - 1) * PageSize;
     }
     let response;
-    console.log(skip);
+    let url = `https://dummyjson.com/products?limit=${PageSize}&skip=${skip}`;
     if (input !== "") {
       response = await fetch(
-        `https://dummyjson.com/products/search?q=${input}`
+        `https://dummyjson.com/products/search?q=${input}&limit=${PageSize}`
       );
     } else {
       response = await fetch(url);
@@ -30,19 +30,20 @@ const Page = () => {
     const data = await response.json();
     setlen(Math.ceil(data?.total / PageSize));
     setproduct(data?.products);
-    console.log(data);
+    console.log("url", url);
   };
-  console.log(len);
+
   const my_array = Array.from({ length: len }, (_, i) => i + 1);
   useEffect(() => {
     fetchdata();
-  }, [currentP , input]);
+  }, [currentP, input]);
+  console.log(Number(setCurrentP));
   return (
     <div className="gap-[40px] flex flex-col">
       <div className="w-[100%] h-[10%] flex justify-center">
         <div className="w-[69%] h-[100px] flex justify-start items-end">
           <input
-            className="w-[23%] h-[35%%] border-2"
+            className="w-[23%] h-[35%] border-2 rounded-lg ml-[-15px]"
             placeholder="Enter Product Name..."
             type="text"
             value={input}
@@ -90,7 +91,19 @@ const Page = () => {
           })}
         </div>
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center gap-[20px]">
+        <div
+          className="w-[40px] h-[40px]"
+          onClick={() => {
+            setCurrentP(currentP + 1);
+          }}
+        >
+          <img
+            src="https://www.iconpacks.net/icons/2/free-arrow-right-icon-2817-thumb.png"
+            alt=""
+            className="transform -rotate-180"
+          />
+        </div>
         <div className="flex gap-[20px]">
           {my_array.map((num) => {
             return (
@@ -106,6 +119,17 @@ const Page = () => {
               </Button>
             );
           })}
+          <div
+            className="w-[40px] h-[40px]"
+            onClick={() => {
+              setCurrentP(currentP - 1);
+            }}
+          >
+            <img
+              src="https://www.iconpacks.net/icons/2/free-arrow-right-icon-2817-thumb.png"
+              alt=""
+            />
+          </div>
         </div>
       </div>
       <div></div>
