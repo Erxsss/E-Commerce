@@ -22,7 +22,7 @@ const Page = () => {
     let url = `https://dummyjson.com/products?limit=${PageSize}&skip=${skip}`;
     if (input !== "") {
       response = await fetch(
-        `https://dummyjson.com/products/search?q=${input}&limit=${PageSize}`
+        `https://dummyjson.com/products/search?q=${input}&limit=${PageSize}&skip=${skip}`
       );
     } else {
       response = await fetch(url);
@@ -32,11 +32,15 @@ const Page = () => {
     setproduct(data?.products);
     console.log("url", url);
   };
-
   const my_array = Array.from({ length: len }, (_, i) => i + 1);
   useEffect(() => {
     fetchdata();
   }, [currentP, input]);
+  useEffect(() => {
+    if (currentP > 1) {
+      setCurrentP(1);
+    }
+  }, [input]);
   console.log(Number(setCurrentP));
   return (
     <div className="gap-[40px] flex flex-col">
@@ -91,46 +95,58 @@ const Page = () => {
           })}
         </div>
       </div>
-      <div className="flex justify-center gap-[20px]">
-        <div
-          className="w-[40px] h-[40px]"
+      <div className="flex justify-center gap-[20px] items-center">
+        <Button
+          variant="outline"
+          className="w-[40px] h-[40px] p-0"
           onClick={() => {
-            setCurrentP(currentP + 1);
+            if (currentP > 1) {
+              setCurrentP(currentP - 1);
+              router.push(`?page=${currentP - 1}`);
+            }
           }}
+          disabled={currentP === 1}
         >
           <img
             src="https://www.iconpacks.net/icons/2/free-arrow-right-icon-2817-thumb.png"
-            alt=""
-            className="transform -rotate-180"
+            alt="Previous"
+            className="transform -rotate-180 w-6 h-6"
           />
-        </div>
+        </Button>
+
         <div className="flex gap-[20px]">
-          {my_array.map((num) => {
-            return (
-              <Button
-                key={num}
-                className="w-[40px] h-[40px] flex justify-center items-center border-4"
-                onClick={() => {
-                  setCurrentP(num);
-                  router.push(`?page=${num}`);
-                }}
-              >
-                {num}
-              </Button>
-            );
-          })}
-          <div
-            className="w-[40px] h-[40px]"
-            onClick={() => {
-              setCurrentP(currentP - 1);
-            }}
-          >
-            <img
-              src="https://www.iconpacks.net/icons/2/free-arrow-right-icon-2817-thumb.png"
-              alt=""
-            />
-          </div>
+          {my_array.map((num) => (
+            <Button
+              key={num}
+              variant={currentP === num ? "default" : "outline"}
+              className="w-[40px] h-[40px] p-0"
+              onClick={() => {
+                setCurrentP(num);
+                router.push(`?page=${num}`);
+              }}
+            >
+              {num}
+            </Button>
+          ))}
         </div>
+
+        <Button
+          variant="outline"
+          className="w-[40px] h-[40px] p-0"
+          onClick={() => {
+            if (currentP < len) {
+              setCurrentP(currentP + 1);
+              router.push(`?page=${currentP + 1}`);
+            }
+          }}
+          disabled={currentP === len}
+        >
+          <img
+            src="https://www.iconpacks.net/icons/2/free-arrow-right-icon-2817-thumb.png"
+            alt="Next"
+            className="w-6 h-6"
+          />
+        </Button>
       </div>
       <div></div>
     </div>
